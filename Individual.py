@@ -1,11 +1,10 @@
 import random
-
+import constants
+import Fitness
 class Individual(object):
     def __init__(self, chromosome):
         self.chromosome = chromosome
-        self.fitness = self.cal_fitness()
-
-
+        self.fitness = Fitness.cal_fitness(chromosome,constants.TARGET)
     @classmethod
     def mutate_genes(self,genes):
         gene = random.choice(genes)
@@ -27,15 +26,6 @@ class Individual(object):
                 child_chromosome.append(gp2)
             
             else:
-                child_chromosome.append(self.mutate_genes())
+                child_chromosome.append(self.mutate_genes(constants.GENES))
         return Individual(child_chromosome)
     
-    def cal_fitness(self,target):
-        '''
-        Calculate fitness score
-        
-        '''
-        fitness = 0
-        for gs, gt  in zip(self.chromosome, target):
-            if gs != gt: fitness +=1
-        return fitness
