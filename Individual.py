@@ -5,6 +5,8 @@ class Individual(object):
     def __init__(self, chromosome):
         self.chromosome = chromosome
         self.fitness = Fitness.cal_fitness(chromosome,constants.TARGET)
+   
+   
     @classmethod
     def mutate_genes(self,genes):
         gene = random.choice(genes)
@@ -26,6 +28,9 @@ class Individual(object):
                 child_chromosome.append(gp2)
             
             else:
+                '''
+                    small chance that a mutation will occur
+                '''
                 child_chromosome.append(self.mutate_genes(constants.GENES))
         return Individual(child_chromosome)
     
