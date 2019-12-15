@@ -1,9 +1,9 @@
 from Individual import Individual
 import random
-
+import json
 
 genes  = [0,1,2,3,4,5,6,7,8]
-population_size = 10
+population_size = 400
 
 
 class Player(Individual):
@@ -82,20 +82,40 @@ for x in range(population_size):
 
 
 
+
+
+
+def savegenetictree(tree,players,generation):
+    tree[generation] = []
+    X_wins = 0
+    O_wins = 0
+    Draws = 0
+    for x in players:
+        tree[generation].append({"chromosome":x.chromosome,"fitness":x.fitness})
+        if x.fitness == 3:
+            X_wins += 1
+        elif x.fitness == -3:
+            O_wins +=1
+        else:
+            Draws +=1
+    #tree[generation]['X_wins'] = X_wins
+    #tree[generation]['O_wins'] = O_wins
+    #tree[generation]['Draws'] = Draws
+    with open('result.json','w+') as output:
+        json.dump(tree,output)
+    return tree
+
+
+
 #fitness([4, 7, 6, 0, 3, 1, 5, 2, 8])
-for _ in range(10000):
+tree = {}
+for _ in range(1000):
 
     players = sorted(players, key= lambda x:x.fitness)
 
     print('Generation: {}'.format(_+1))
-    for x in players:
-        winner = 'draw'
-        if x.fitness == 3:
-            winner = 'X'
-        elif x.fitness == -3:
-            winner = 'O'
-        print("moves: {}  winner: {}".format(x.chromosome,winner))
 
+    savegenetictree(tree,players,_+1)
 
     new_generation = []
     elite_count =  int((10*population_size)/100)
@@ -105,10 +125,36 @@ for _ in range(10000):
     offspring_count= int((90*population_size)/100)
 
     for __ in range(offspring_count):
-        parent1 = random.choice(players[:50])
-        parent2 = random.choice(players[:50])
+        parent1 = random.choice(players[:200])
+        parent2 = random.choice(players[:200])
 
         child = parent1.reproduce(parent2)
 
         new_generation.append(child)
     players = new_generation
+
+
+players = sorted(players, key= lambda x:x.fitness)
+
+model = {}
+
+model['moves'] =[]
+
+O_wins = 0
+X_wins = 0
+
+for x in players:
+    winner = 'draw'
+    if x.fitness == 3:
+        winner = 'X'
+        X_wins +=1
+    elif x.fitness == -3:
+        winner = 'O'
+        O_wins += 1
+    print("moves: {}  winner: {}".format(x.chromosome,winner))
+    model['moves'].append(x.chromosome)
+
+draws = population_size -(X_wins+O_wins)
+print('X:{} O:{} draws {}'.format(X_wins,O_wins, draws))
+with open('model.json','w') as output:
+    json.dump(model,output)
