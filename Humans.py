@@ -6,7 +6,7 @@ class Individual(object):
 
 
     def mutate_genes(self):
-        gene = random.choice(self.alleles)
+        gene = random.choice(self.alleles[-1])
         return gene
 
     def create_gnome(self,length):
@@ -15,14 +15,13 @@ class Individual(object):
 
 class Human(Individual):
     def __init__(self):
-        self.alleles = ['X','Y']
+        self.alleles = [['X','Y']]
 
     def Get_Gender(self):
         if 'Y' in self.chromosomes:
             return 'M'
         else:
             return 'Y'
-
 
 class Male(Human):
     def __init__(self):
@@ -33,14 +32,3 @@ class Female(Human):
     def __init__(self):
         self.chromosomes = ['X','X']
         self.gender = self.Get_Gender()
-
-
-
-
-
-
-male = Male()
-
-
-
-print('chromosome: {}'.format(male.gender))
